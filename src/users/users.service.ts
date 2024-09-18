@@ -4,7 +4,7 @@ import { User, UserDocument } from './schemas/user.schema';
 import { Model } from 'mongoose';
 import { CreateUserDTO } from './dto/createUser.dto';
 import { UpdateUserDTO } from './dto/updateUser.dto';
-
+import * as bcrypt from 'bcryptjs'
 @Injectable()
 export class UsersService {
     constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
@@ -21,8 +21,21 @@ export class UsersService {
         return user;
     }
 
+    async findByEmail(email : string) : Promise<User | null> {
+        return this.userModel.findOne({ email }).exec();
+    }
+
+    async findByUserName(userName : string) : Promise<User | null> {
+        return this.userModel.findOne({ userName }).exec();
+    }
+
     async register(userDTO: CreateUserDTO) : Promise<User> {
-        const newUser = new this.userModel(userDTO);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(userDTO.password, salt);
+        const newUser = new this.userModel({
+            ...userDTO,
+            password : hashedPassword
+        });
         return newUser.save();
     }
 
