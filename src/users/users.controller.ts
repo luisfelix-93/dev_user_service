@@ -1,7 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDTO } from './dto/createUser.dto';
 import { UpdateUserDTO } from './dto/updateUser.dto';
+import { CacheInterceptor } from '@nestjs/cache-manager';
+import { JwtAuthGuard } from 'src/auth/auth.guard';
+// import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @Controller('user')
 export class UsersController {
@@ -13,7 +16,10 @@ export class UsersController {
     }
 
     @Get()
+    @UseGuards(JwtAuthGuard)
+    @UseInterceptors(CacheInterceptor)
     findAll() {
+        console.log('Searching data on DB')
         return this.usersService.findAll();
     }
 
