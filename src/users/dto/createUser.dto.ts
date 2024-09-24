@@ -16,4 +16,8 @@ export class CreateUserDTO {
 
     @IsString()
     readonly password: string;
+
+    @IsString()
+    readonly github_username: string;
+
 }

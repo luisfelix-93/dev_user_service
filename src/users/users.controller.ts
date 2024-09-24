@@ -24,8 +24,10 @@ export class UsersController {
     }
 
     @Get(':id')
+    @UseGuards(JwtAuthGuard)
+    @UseInterceptors(CacheInterceptor)
     findOne(@Param('id') id: string) {
-        return this.usersService.findOnde(id);
+        return this.usersService.findOne(id);
     }
 
     @Put('id')
