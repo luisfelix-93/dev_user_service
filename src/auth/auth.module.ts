@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
-import { AuthController } from './auth.controller';
+import { AuthController, SessionController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Session, SessionSchema } from './schemas/session.schema';
 
 @Module({
   imports: [
@@ -12,8 +14,12 @@ import { AuthService } from './auth.service';
       secret: "XXXX",
       signOptions: {expiresIn: '1h'}
     }),
+    MongooseModule.forFeature([{name: Session.name, schema: SessionSchema}])
   ],
-  controllers: [AuthController],
+  controllers: [
+    AuthController,
+    SessionController
+  ],
   providers: [AuthService]
 })
 export class AuthModule {}
